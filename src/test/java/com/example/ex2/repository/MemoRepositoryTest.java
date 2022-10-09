@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -112,5 +114,28 @@ class MemoRepositoryTest {
         for (Memo memo : list) {
             System.out.println("memo = " + memo);
         }
+    }
+
+    @Test
+    @Transactional
+    @Commit
+    public void deleteWithQueryMethod(){
+        memoRepository.deleteMemoByIdLessThan(10L);
+    }
+
+    @Test
+    public void queryAnnotations(){
+        System.out.println("memoRepository.updateText(300L, \"30000000\") = " + memoRepository.updateText(300L, "30000000"));
+        System.out.println("memoRepository.getListDesc() = " + memoRepository.getListDesc());
+        Sort sortByIdDesc = Sort.by("id").descending();
+        Pageable pageable = PageRequest.of(0, 10, sortByIdDesc);
+        System.out.println("memoRepository = " + memoRepository.getListWithQuery(15L, pageable).getContent());
+    }
+
+    @Test
+    public void queryObjects(){
+        Sort sortByIdDesc = Sort.by("id").descending();
+        Pageable pageable = PageRequest.of(0, 10, sortByIdDesc);
+        System.out.println("memoRepository.getListWithQueryObject(10L, pageable) = " + memoRepository.getListWithQueryObject(10L, pageable).getContent());
     }
 }
